@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>재미있는 MBTI 테스트</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f4f4f9; }
+        #container { max-width: 600px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; background: #6c5ce7; color: white; cursor: pointer; border-radius: 8px; }
+        .btn:hover { background: #5b4bc4; }
+        #result { display: none; text-align: center; }
+        .emoji { font-size: 80px; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="quiz">
+            <h2 id="q-text">질문이 여기에 표시됩니다.</h2>
+            <button class="btn" onclick="next(0)">그렇다</button>
+            <button class="btn" onclick="next(1)">아니다</button>
+        </div>
+        <div id="result">
+            <div class="emoji" id="r-emoji">🤖</div>
+            <h1 id="r-title">당신의 유형</h1>
+            <p id="r-desc"></p>
+            <button class="btn" onclick="location.reload()">다시하기</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = Array.from({length: 32}, (_, i) => `질문 ${i + 1}: 평소 당신의 성향을 골라보세요.`);
+        let scores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+        let qIdx = 0;
+
+        function next(ans) {
+            // 8개 단위로 E/I, S/N, T/F, J/P 할당 (간략화)
+            const types = ['E', 'I', 'S', 'N', 'T', 'F', 'J', 'P'];
+            scores[types[Math.floor(qIdx / 4)]] += (ans === 0 ? 1 : 0);
+            
+            qIdx++;
+            if (qIdx < 32) {
+                document.getElementById('q-text').innerText = questions[qIdx];
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            const res = (scores.E > scores.I ? 'E' : 'I') + (scores.S > scores.N ? 'S' : 'N') + 
+                        (scores.T > scores.F ? 'T' : 'F') + (scores.J > scores.P ? 'J' : 'P');
+            
+            document.getElementById('r-title').innerText = `당신은 ${res} 유형입니다!`;
+            document.getElementById('r-emoji').innerText = '✨'; // 유형별 매핑 가능
+            document.getElementById('r-desc').innerText = "장점: 효율적임, 단점: 가끔 피곤함.";
+            document.getElementById('result').style.display = 'block';
+        }
+        document.getElementById('q-text').innerText = questions[0];
+    </script>
+</body>
+</html>
